@@ -1,0 +1,24 @@
+name: codex-remote-control-poc
+
+services:
+  codex:
+    build:
+      context: .
+      args:
+        CODEX_VERSION: ${CODEX_VERSION:-0.159.1}
+    image: codex-remote-ubuntu:${CODEX_VERSION:-0.159.1}
+    hostname: codex-phone-ubuntu
+    init: true
+    security_opt:
+      # Required by this POC so Bubblewrap can create the user namespace used
+      # by Codex's Linux sandbox. See the security discussion in README.md.
+      - seccomp=unconfined
+    stdin_open: true
+    tty: true
+    volumes:
+      - codex-home:/home/codex/.codex
+      - codex-workspace:/home/codex/workspace
+
+volumes:
+  codex-home:
+  codex-workspace:
